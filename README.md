@@ -1007,3 +1007,230 @@ sudo nginx -t
 > **Important:** Test the application completely before proceeding to the SSL configuration in the next phase.
 
 ---
+# Phase 16: Configure SSL with Let's Encrypt
+
+The goal of this phase is to enable SSL and serve the application securely over HTTPS.
+
+```text
+Before SSL
+
+http://your-domain.com
+
+        ↓
+
+After SSL
+
+https://your-domain.com
+````
+
+---
+
+## Step 16.1: Verify Prerequisites
+
+Before configuring SSL, make sure the following are working correctly:
+
+* The domain points to the EC2 public IP address.
+* DNS propagation is complete.
+* The application is accessible through HTTP.
+* Nginx is running correctly.
+* Port `80` and port `443` are allowed in the EC2 Security Group.
+
+Test the Nginx configuration:
+
+```bash
+sudo nginx -t
+```
+
+Check the Nginx service:
+
+```bash
+sudo systemctl status nginx
+```
+
+---
+
+## Step 16.2: Verify EC2 Security Group
+
+Make sure the following inbound rules are configured:
+
+| Type  | Port | Purpose       |
+| ----- | ---- | ------------- |
+| SSH   | 22   | Server access |
+| HTTP  | 80   | HTTP traffic  |
+| HTTPS | 443  | HTTPS traffic |
+
+The HTTPS port (`443`) is required for secure HTTPS traffic.
+
+---
+
+## Step 16.3: Install Certbot
+
+Update the package list:
+
+```bash
+sudo apt update
+```
+
+Install Certbot and the Nginx plugin:
+
+```bash
+sudo apt install -y certbot python3-certbot-nginx
+```
+
+Verify the installation:
+
+```bash
+certbot --version
+```
+
+---
+
+## Step 16.4: Request an SSL Certificate
+
+Run Certbot with your domain name:
+
+```bash
+sudo certbot --nginx -d your-domain.com
+```
+
+If you are also using a `www` subdomain:
+
+```bash
+sudo certbot --nginx \
+  -d your-domain.com \
+  -d www.your-domain.com
+```
+
+During the setup, Certbot may ask you to:
+
+1. Enter an email address for certificate notifications.
+2. Accept the Let's Encrypt Terms of Service.
+3. Choose whether to receive optional updates.
+4. Select the domains for SSL configuration.
+5. Choose whether to redirect HTTP traffic to HTTPS.
+
+It is recommended to select:
+
+```text
+Redirect HTTP to HTTPS
+```
+
+---
+
+## Step 16.5: Verify HTTPS
+
+After the certificate is successfully configured, open:
+
+```text
+https://your-domain.com
+```
+
+If applicable:
+
+```text
+https://www.your-domain.com
+```
+
+Verify that:
+
+* The application loads successfully.
+* The browser shows a secure connection.
+* There are no certificate warnings.
+* The frontend and backend are working correctly.
+* API requests are working over HTTPS.
+* WebSocket connections are working, if applicable.
+
+Also verify that HTTP traffic redirects to HTTPS:
+
+```text
+http://your-domain.com
+
+        ↓
+
+https://your-domain.com
+```
+
+---
+
+## Step 16.6: Update Application Configuration
+
+After SSL is configured, review your application configuration and update any URLs or settings that still use:
+
+```text
+http://
+```
+
+Change them to:
+
+```text
+https://
+```
+
+Review all areas of your application where the domain or protocol is configured.
+
+This may include:
+
+* `.env.production`
+* Django settings
+* CORS configuration
+* CSRF trusted origins
+* Frontend URLs
+* Backend URLs
+* API URLs
+* WebSocket URLs
+* Authentication or callback URLs
+* Cookie security settings
+* Any hardcoded HTTP URLs
+
+For example, values that previously used:
+
+```text
+http://your-domain.com
+```
+
+may need to be updated to:
+
+```text
+https://your-domain.com
+```
+
+Also review security-related settings that depend on HTTPS, such as secure cookies.
+
+> The exact configuration changes depend on your application's architecture and implementation.
+
+After making changes, rebuild or restart the application so the updated environment variables and configuration are applied.
+
+For example:
+
+```bash
+cd ~/project-folder
+
+docker compose -f docker-compose.prod.yml down
+
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+---
+
+## Step 16.7: Verify Certificate Renewal
+
+Let's Encrypt certificates have a limited validity period and must be renewed periodically.
+
+Certbot normally configures automatic certificate renewal.
+
+Test the renewal process using:
+
+```bash
+sudo certbot renew --dry-run
+```
+
+If the test is successful, Certbot should confirm that the simulated renewal completed successfully.
+
+You can also check the Certbot renewal timer:
+
+```bash
+sudo systemctl status certbot.timer
+```
+
+---
+
