@@ -276,3 +276,24 @@ docker --version
 ```
 
 ---
+# Phase 5: Verify Docker Compose
+
+Check whether Docker Compose is available:
+
+```bash
+docker compose version
+```
+
+If Docker Compose is not installed:
+
+```bash
+sudo apt install -y docker-compose-plugin
+```
+
+Verify again:
+
+```bash
+docker compose version
+```
+
+---
