@@ -297,3 +297,38 @@ docker compose version
 ```
 
 ---
+# Phase 6: Clone the Repository
+
+Navigate to your home directory:
+
+```bash
+cd ~
+```
+
+Clone your project repository:
+
+```bash
+git clone YOUR_GITHUB_REPOSITORY_URL
+```
+
+Navigate into the project:
+
+```bash
+cd project-folder
+```
+
+Verify the project structure:
+
+```bash
+ls
+```
+
+Expected structure:
+
+```text
+backend
+frontend
+docker-compose.yml
+```
+
+---
