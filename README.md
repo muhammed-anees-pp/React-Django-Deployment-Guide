@@ -591,3 +591,71 @@ sudo systemctl status nginx
 ```
 
 ---
+
+
+# Phase 13: Configure Nginx
+
+Create a new Nginx configuration:
+
+```bash
+sudo nano /etc/nginx/sites-available/project-name
+```
+
+Use the following basic configuration:
+
+```nginx
+server {
+    listen 80;
+
+    server_name _;
+
+    root /home/ubuntu/project-folder/frontend/dist;
+
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:8000;
+    }
+
+    location /ws/ {
+        proxy_http_version 1.1;
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        proxy_pass http://127.0.0.1:8000;
+    }
+}
+```
+
+Enable the configuration:
+
+```bash
+sudo ln -s \
+  /etc/nginx/sites-available/project-name \
+  /etc/nginx/sites-enabled/
+```
+
+Remove the default Nginx configuration:
+
+```bash
+sudo rm /etc/nginx/sites-enabled/default
+```
+
+Test the Nginx configuration:
+
+```bash
+sudo nginx -t
+```
+
+If the configuration test is successful, restart Nginx:
+
+```bash
+sudo systemctl restart nginx
+```
+
+---
