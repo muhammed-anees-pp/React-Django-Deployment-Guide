@@ -228,3 +228,51 @@ ubuntu@ip-xxx-xxx-xxx-xxx:~$
 ```
 
 ---
+# Phase 3: Update the Server
+
+Update the package lists and upgrade installed packages:
+
+```bash
+sudo apt update
+sudo apt upgrade -y
+```
+
+Install commonly required utilities:
+
+```bash
+sudo apt install -y \
+  git \
+  curl \
+  wget \
+  unzip \
+  vim
+```
+
+---
+# Phase 4: Install Docker
+
+Install Docker using the official installation script:
+
+```bash
+curl -fsSL https://get.docker.com | sudo sh
+```
+
+Add the `ubuntu` user to the Docker group:
+
+```bash
+sudo usermod -aG docker ubuntu
+```
+
+Apply the new group membership:
+
+```bash
+newgrp docker
+```
+
+Verify the installation:
+
+```bash
+docker --version
+```
+
+---
