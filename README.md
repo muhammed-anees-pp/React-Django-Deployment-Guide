@@ -512,3 +512,26 @@ docker compose -f docker-compose.prod.yml logs -f
 ```
 
 ---
+# Phase 10: Verify the API
+
+Test the backend from the EC2 instance:
+
+```bash
+curl http://localhost:8000
+```
+
+You can also test it using the EC2 public IP:
+
+```bash
+curl http://YOUR_EC2_PUBLIC_IP:8000
+```
+
+If the API responds successfully, the backend deployment is working.
+
+```text
+Backend deployment complete
+```
+
+> Stop at this point and test the backend thoroughly before continuing with the frontend and Nginx configuration.
+
+---
