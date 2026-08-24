@@ -659,3 +659,30 @@ sudo systemctl restart nginx
 ```
 
 ---
+# Phase 14: Verify the Application
+
+Open your browser and visit:
+
+```text
+http://YOUR_EC2_PUBLIC_IP
+```
+
+Expected result:
+
+```text
+React application loads successfully.
+```
+
+Test the Django API:
+
+```text
+http://YOUR_EC2_PUBLIC_IP/api/
+```
+
+Expected result:
+
+```text
+Django API responds successfully.
+```
+
+---
