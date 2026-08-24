@@ -1,4 +1,3 @@
-````markdown
 # Nginx Commands
 
 This document contains commonly used Nginx commands for managing, monitoring, and troubleshooting Nginx on a production server.
