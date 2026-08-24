@@ -1,115 +1,205 @@
-This document contains commonly used Docker and Docker Compose commands for managing, monitoring, and troubleshooting a containerized production application.
+# Docker Commands
 
-> Replace container names, service names, and Compose file names according to your project configuration.
+This document contains commonly used Docker commands for managing and troubleshooting a containerized application deployed in a production environment.
+
+> Replace placeholder values such as `your-container-name`, `your-service-name`, and `docker-compose.prod.yml` according to your project configuration.
 
 ---
 
 ## View Running Containers
 
-To view all currently running containers:
+To view all currently running Docker containers:
 
 ```bash
 docker ps
+````
 
-To view all containers, including stopped containers:
+This command displays information such as:
 
+* Container ID
+* Container name
+* Image
+* Status
+* Port mappings
+
+Before running commands that require a container name, use `docker ps` to identify the correct container.
+
+---
+
+## View All Containers
+
+To view both running and stopped containers:
+
+```bash
 docker ps -a
-View Container Logs
+```
+
+---
+
+## View Container Logs
 
 To view logs from a specific container:
 
+```bash
 docker logs your-container-name
+```
 
-To view the latest logs:
+For example, to view only the latest `50` log entries:
 
-docker logs your-container-name --tail 100
-
-For example:
-
+```bash
 docker logs your-container-name --tail 50
-Follow Container Logs
+```
 
-To continuously follow container logs:
+To view the latest `100` log entries:
 
+```bash
+docker logs your-container-name --tail 100
+```
+
+---
+
+## Follow Container Logs
+
+To continuously monitor logs from a container:
+
+```bash
 docker logs -f your-container-name
+```
 
 Press:
 
+```text
 Ctrl + C
+```
 
 to stop following the logs.
 
-View All Docker Compose Logs
+---
 
-If your application uses Docker Compose:
+## View All Docker Compose Logs
 
-docker compose -f docker-compose.prod.yml logs -f
+If your application uses Docker Compose, you can view logs from all services using:
 
-To view logs without continuously following them:
-
+```bash
 docker compose -f docker-compose.prod.yml logs
-View Logs for a Specific Service
-docker compose -f docker-compose.prod.yml logs service-name
+```
 
-For example:
+To continuously follow the logs:
 
-docker compose -f docker-compose.prod.yml logs backend-web
+```bash
+docker compose -f docker-compose.prod.yml logs -f
+```
 
-To follow the logs:
+---
 
-docker compose -f docker-compose.prod.yml logs -f backend-web
-Restart a Container
+## View Logs for a Specific Service
 
-To restart a specific container:
+To view logs for a specific Docker Compose service:
 
+```bash
+docker compose -f docker-compose.prod.yml logs your-service-name
+```
+
+To continuously follow the service logs:
+
+```bash
+docker compose -f docker-compose.prod.yml logs -f your-service-name
+```
+
+---
+
+## Check Docker Compose Service Status
+
+To check the status of services defined in the Docker Compose configuration:
+
+```bash
+docker compose -f docker-compose.prod.yml ps
+```
+
+---
+
+## Restart a Specific Container
+
+To restart a container:
+
+```bash
 docker restart your-container-name
-Stop a Container
+```
+
+---
+
+## Stop a Specific Container
+
+```bash
 docker stop your-container-name
-Start a Container
+```
+
+---
+
+## Start a Specific Container
+
+```bash
 docker start your-container-name
-Restart All Application Services
+```
+
+---
+
+## Restart Application Services
 
 Navigate to the project directory:
 
+```bash
 cd ~/project-folder
+```
 
-Stop the services:
+Stop the running services:
 
+```bash
 docker compose -f docker-compose.prod.yml down
+```
 
 Start the services again:
 
+```bash
 docker compose -f docker-compose.prod.yml up -d
-Rebuild and Restart Services
+```
 
-After making changes to the Dockerfile, dependencies, or application configuration:
+---
 
+## Rebuild and Restart Application Services
+
+After making changes to the application, dependencies, Dockerfile, or Docker Compose configuration, rebuild the images and restart the services:
+
+```bash
 docker compose -f docker-compose.prod.yml up -d --build
+```
 
-If required, first stop the existing services:
+If required, stop the existing services first:
 
+```bash
 docker compose -f docker-compose.prod.yml down
+```
 
-Then rebuild and start:
+Then rebuild and start the services:
 
+```bash
 docker compose -f docker-compose.prod.yml up -d --build
-Check Docker Compose Service Status
-docker compose -f docker-compose.prod.yml ps
-Check Docker Disk Usage
+```
 
-To check Docker disk usage:
+---
 
-docker system df
-Important Notes
+## Verify Container Status
 
-When troubleshooting a containerized application, the following commands are commonly useful:
+After starting or restarting the application, verify that the required containers are running:
 
+```bash
 docker ps
+```
+
+If a container is not running, check its logs:
+
+```bash
 docker logs your-container-name --tail 100
-docker compose -f docker-compose.prod.yml logs -f
+```
 
-Always check the actual container names using:
-
-docker ps
-
-before running commands that require a container name.
+---

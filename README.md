@@ -1241,7 +1241,12 @@ The following documentation contains useful commands, troubleshooting steps, and
 | Documentation | Description |
 | --- | --- |
 | [Docker Commands](./docs/docker/README.md) | Managing containers, viewing logs, restarting services, and checking Docker status. |
-
+| [Nginx Commands](./docs/nginx/README.md) | Testing, reloading, and restarting Nginx. |
+| [Server Management](./docs/server/README.md) | Checking memory, configuring swap, monitoring resources, and checking open ports. |
+| [Database Connectivity](./docs/database/README.md) | Testing connectivity between the application server and AWS RDS. |
+| [DNS and Domain Checks](./docs/dns/README.md) | Checking domain resolution and verifying DNS configuration. |
+| [Frontend Build Troubleshooting](./docs/frontend/README.md) | Handling frontend build issues, including Node.js memory and heap issues. |
+| [Troubleshooting](./docs/troubleshooting/README.md) | Common commands for debugging deployment issues. |
 
 ---
 **Happy deploying! 🚀**
