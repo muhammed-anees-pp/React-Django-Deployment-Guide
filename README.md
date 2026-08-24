@@ -332,3 +332,38 @@ docker-compose.yml
 ```
 
 ---
+# Phase 7: Create Production Environment Variables
+
+> **Important:** Never commit production secrets or environment files to GitHub.
+
+Navigate to the backend directory:
+
+```bash
+cd backend
+```
+
+Create the production environment file:
+
+```bash
+nano .env.production
+```
+
+Example configuration:
+
+```env
+DEBUG=False
+SECRET_KEY=YOUR_SECRET_KEY
+ALLOWED_HOSTS=YOUR_SERVER_IP
+
+DB_NAME=database_name
+DB_USER=postgres
+DB_PASSWORD=YOUR_DATABASE_PASSWORD
+DB_HOST=project-name.cxy4g4e2mswh.ap-south-1.rds.amazonaws.com (if you used AWS RDS or any other RDS)
+DB_PORT=5432
+
+REDIS_URL=redis://redis:6379/0
+```
+
+Save and exit the editor.
+
+---
