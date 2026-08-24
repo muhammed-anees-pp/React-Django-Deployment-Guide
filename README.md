@@ -483,3 +483,32 @@ project-folder/
 This approach allows you to keep your existing Docker Compose configuration while maintaining a separate configuration specifically for production deployment.
 
 ---
+# Phase 9: Start the Backend Services
+
+Build and start the containers:
+
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+Check the running containers:
+
+```bash
+docker ps
+```
+
+You should see containers similar to:
+
+```text
+backend-web
+backend-worker
+redis
+```
+
+To inspect logs:
+
+```bash
+docker compose -f docker-compose.prod.yml logs -f
+```
+
+---
