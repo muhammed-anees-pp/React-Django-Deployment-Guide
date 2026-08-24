@@ -535,3 +535,32 @@ Backend deployment complete
 > Stop at this point and test the backend thoroughly before continuing with the frontend and Nginx configuration.
 
 ---
+# Phase 11: Build the Frontend
+
+Navigate to the frontend directory:
+
+```bash
+cd ~/project-folder/frontend
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Build the production version:
+
+```bash
+npm run build
+```
+
+The production build should be generated in:
+
+```text
+frontend/dist
+```
+
+> Depending on your frontend framework and build configuration, the output directory may differ.
+
+---
