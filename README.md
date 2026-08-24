@@ -1242,6 +1242,7 @@ The following documentation contains useful commands, troubleshooting steps, and
 | --- | --- |
 | [Docker Commands](./docs/docker/README.md) | Managing containers, viewing logs, restarting services, and checking Docker status. |
 | [Nginx Commands](./docs/nginx/README.md) | Testing, reloading, and restarting Nginx. |
+| [Server Management](./docs/server/README.md) | Checking memory, configuring swap, monitoring resources, and checking open ports. |
 
 
 ---
