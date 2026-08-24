@@ -367,3 +367,119 @@ REDIS_URL=redis://redis:6379/0
 Save and exit the editor.
 
 ---
+# Phase 8: Create Production Docker Compose Configuration
+
+If your project already has a Docker Compose configuration for the backend, for example:
+
+```text
+docker-compose-backend.yml
+```
+
+you do not necessarily need to create a completely new Docker Compose file from scratch.
+
+Instead, you can create a production-specific configuration by copying the existing Compose file and modifying it for the production environment.
+
+## Step 1: Navigate to the Project Root Directory
+
+```bash
+cd ~/project-folder
+```
+
+## Step 2: Check the Existing Docker Compose File
+
+Verify that the existing backend Compose file is available:
+
+```bash
+ls
+```
+
+You should see something similar to:
+
+```text
+backend/
+frontend/
+docker-compose-backend.yml
+```
+
+## Step 3: Create the Production Compose File
+
+Copy the existing backend Docker Compose configuration:
+
+```bash
+cp docker-compose-backend.yml docker-compose.prod.yml
+```
+
+This creates a new file:
+
+```text
+docker-compose.prod.yml
+```
+
+The original development or backend configuration remains unchanged.
+
+## Step 4: Modify the Production Configuration
+
+Open the production Compose file:
+
+```bash
+nano docker-compose.prod.yml
+```
+
+Update the configuration based on your production requirements.
+
+Example:
+
+```yaml
+services:
+  backend-web:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+
+    env_file:
+      - backend/.env.production
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      - redis
+
+  backend-worker:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+
+    command: celery -A config worker -l info
+
+    env_file:
+      - backend/.env.production
+
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+```
+
+> Adjust the Celery application path (`config`) according to your Django project structure.
+
+> **Note:** The production configuration may differ from your existing development configuration. For example, you may need to use production environment variables, remove development-only settings, configure restart policies, or adjust exposed ports.
+
+After completing the production configuration, the project structure may look like:
+
+```text
+project-folder/
+├── backend/
+│   ├── Dockerfile
+│   └── .env.production
+│
+├── frontend/
+│
+├── docker-compose-backend.yml
+└── docker-compose.prod.yml
+```
+
+This approach allows you to keep your existing Docker Compose configuration while maintaining a separate configuration specifically for production deployment.
+
+---
