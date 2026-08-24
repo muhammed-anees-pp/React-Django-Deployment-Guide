@@ -103,3 +103,128 @@ gp3
 After configuring the instance, launch it.
 
 ---
+# Phase 2: Connect to EC2
+
+AWS provides multiple ways to connect to an EC2 instance. For this setup, you can use either:
+
+* **EC2 Instance Connect through the AWS Console**
+* **SSH from your local machine using a key pair**
+
+---
+
+## Option 1: Connect Using EC2 Instance Connect
+
+AWS provides an option to connect directly to your EC2 instance from the AWS Management Console.
+
+Navigate to:
+
+```text
+AWS Console
+→ EC2
+→ Instances
+→ Select Your Instance
+→ Connect
+```
+
+Select:
+
+```text
+EC2 Instance Connect
+```
+
+Then click:
+
+```text
+Connect
+```
+
+A browser-based terminal will open, allowing you to access your EC2 instance directly.
+
+If the connection is successful, you should see something similar to:
+
+```bash
+ubuntu@ip-xxx-xxx-xxx-xxx:~$
+```
+
+> This method is useful for quickly accessing your server without configuring SSH on your local machine.
+
+---
+
+## Option 2: Connect Using SSH from Your Local Machine
+
+You can also connect to the EC2 instance from your local machine using the `.pem` key pair created while launching the instance.
+
+### Step 1: Get the Public IPv4 Address
+
+Navigate to:
+
+```text
+EC2
+→ Instances
+→ Select Instance
+→ Public IPv4 Address
+```
+
+Example:
+
+```text
+13.xxx.xxx.xxx
+```
+
+---
+
+### Step 2: Navigate to the Key Pair Location
+
+Open your terminal and navigate to the directory containing your `.pem` key:
+
+```bash
+cd /path/to/key
+```
+
+---
+
+### Step 3: Set the Correct Permissions
+
+Set the appropriate permissions for the key file:
+
+```bash
+chmod 400 project-key.pem
+```
+
+---
+
+### Step 4: Connect to the Instance
+
+Use the following command:
+
+```bash
+ssh -i project-key.pem ubuntu@YOUR_PUBLIC_IP
+```
+
+Replace:
+
+```text
+project-key.pem
+```
+
+with your actual key pair filename, and replace:
+
+```text
+YOUR_PUBLIC_IP
+```
+
+with the public IPv4 address of your EC2 instance.
+
+Example:
+
+```bash
+ssh -i project-key.pem ubuntu@13.xxx.xxx.xxx
+```
+
+If the connection is successful, you should see something similar to:
+
+```bash
+ubuntu@ip-xxx-xxx-xxx-xxx:~$
+```
+
+---
