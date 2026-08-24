@@ -1240,6 +1240,8 @@ The following documentation contains useful commands, troubleshooting steps, and
 
 | Documentation | Description |
 | --- | --- |
+| [Docker Commands](./docs/docker/README.md) | Managing containers, viewing logs, restarting services, and checking Docker status. |
+
 
 ---
 **Happy deploying! 🚀**
