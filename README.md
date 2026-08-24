@@ -686,3 +686,324 @@ Django API responds successfully.
 ```
 
 ---
+# Phase 15: Domain Configuration and Production Environment Setup
+
+Only configure the domain after confirming that the application works correctly using the EC2 public IP.
+
+---
+
+> Replace the domain name and EC2 public IP with your own values when following this guide.
+
+---
+
+# Step 15.1: Configure Domain DNS Records
+
+This example uses Hostinger as the domain provider.
+
+Navigate to:
+
+```text
+Hostinger
+→ Domains
+→ Your Domain
+→ DNS / Nameservers
+```
+
+For this example:
+
+```text
+Hostinger
+→ Domains
+→ projectname.com (Any domain that you have purchased)
+→ DNS / Nameservers
+```
+
+## Add an A Record
+
+Create an A record pointing the root domain to your EC2 public IP address.
+
+```text
+Type: A
+Name: @
+Value: 13.232.45.30
+TTL: 300
+```
+
+The structure is:
+
+```text
+projectname.com
+      │
+      ▼
+EC2 Public IP
+```
+
+---
+
+## Add a CNAME Record for `www`
+
+Create a CNAME record:
+
+```text
+Type: CNAME
+Name: www
+Value: projectname.com
+TTL: 300
+```
+
+This allows:
+
+```text
+www.projectname.com
+```
+
+to point to:
+
+```text
+projectname.com
+```
+
+---
+
+## Verify DNS Configuration
+
+DNS changes may take some time to propagate.
+
+You can verify the domain using:
+
+```bash
+nslookup projectname.com
+```
+
+Expected result:
+
+```text
+Name: projectname.com
+Address: 13.232.45.30
+```
+
+You can also verify the `www` subdomain:
+
+```bash
+nslookup www.projectname.com
+```
+
+> The actual output may vary depending on DNS propagation and your local DNS resolver.
+
+---
+
+# Step 15.2: Update Application Production Configuration
+
+After configuring your domain, review your production environment and application configuration.
+
+Navigate to your production environment file:
+
+```bash
+nano ~/project-folder/backend/.env.production
+```
+
+Update any configuration values that currently use:
+
+* EC2 public IP address
+* Temporary domain values
+* `localhost`
+* `127.0.0.1`
+* HTTP URLs that should later use HTTPS
+
+For example, review settings related to:
+
+```text
+ALLOWED_HOSTS
+CORS_ALLOWED_ORIGINS
+CSRF_TRUSTED_ORIGINS
+Frontend URLs
+Backend URLs
+Webhook URLs
+Cookie security
+Any custom domain or URL configuration
+```
+
+### Example
+
+Before configuring the domain, your application may contain an EC2 public IP:
+
+```env
+ALLOWED_HOSTS=YOUR_EC2_PUBLIC_IP
+```
+
+After configuring the domain, update it to include your domain:
+
+```env
+ALLOWED_HOSTS=your-domain.com,www.your-domain.com
+```
+
+Similarly, review all other environment variables and application settings that contain the EC2 public IP address and replace or update them with the appropriate domain name where required.
+
+For example:
+
+```text
+http://YOUR_EC2_PUBLIC_IP
+```
+
+may need to become:
+
+```text
+http://your-domain.com
+```
+
+After SSL is configured in **Phase 16**, HTTP URLs may need to be updated again:
+
+```text
+https://your-domain.com
+```
+
+> **Important:** The exact variables that need to be updated depend on your application. Review your `.env.production`, Django settings, frontend configuration, API URLs, CORS settings, CSRF settings, authentication configuration, and any other location where the EC2 public IP address or domain is used.
+
+
+# Step 15.3: Configure Nginx for the Domain
+
+Open the Nginx configuration file:
+
+```bash
+sudo nano /etc/nginx/sites-available/project-name
+```
+
+Update the server block:
+
+```nginx
+server {
+    listen 80;
+
+    server_name projectname.com www.projectname.com;
+
+    root /home/ubuntu/project-folder/frontend/dist;
+
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:8000;
+    }
+
+    location /ws/ {
+        proxy_http_version 1.1;
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        proxy_pass http://127.0.0.1:8000;
+    }
+}
+```
+
+Replace:
+
+```text
+projectname.com
+www.projectname.com
+```
+
+with your own domain name.
+
+---
+
+## Test the Nginx Configuration
+
+Before reloading Nginx, test the configuration:
+
+```bash
+sudo nginx -t
+```
+
+If the configuration is valid, you should see a successful result.
+
+Reload Nginx:
+
+```bash
+sudo systemctl reload nginx
+```
+
+---
+
+# Step 15.4: Rebuild Docker Containers
+
+After modifying `.env.production`, rebuild and restart the application containers.
+
+Navigate to the project root:
+
+```bash
+cd ~/project-folder
+```
+
+Stop the existing containers:
+
+```bash
+docker compose -f docker-compose.prod.yml down
+```
+
+Rebuild and start the containers:
+
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+Check the running containers:
+
+```bash
+docker ps
+```
+
+Make sure the required services are running successfully.
+
+Example:
+
+```text
+backend-web
+backend-worker
+redis
+```
+
+> The exact container names and services depend on your `docker-compose.prod.yml` configuration.
+
+---
+
+# Step 15.5: Verify the Deployment
+
+After configuring the domain and updating the application configuration, thoroughly test the complete deployment.
+
+Check that:
+
+* The domain is resolving to the correct EC2 instance.
+* The frontend is loading correctly.
+* The backend API is working correctly.
+* Nginx is serving and proxying requests correctly.
+* WebSocket connections are working, if applicable.
+* Docker containers and background services are running properly.
+* Redis, Celery Worker, and Celery Beat are working as expected.
+* AWS RDS connectivity is working correctly.
+* All application features are functioning properly with the configured domain.
+
+You can use tools such as:
+
+```bash
+nslookup your-domain.com
+```
+
+```bash
+docker ps
+```
+
+```bash
+curl http://localhost:8000
+```
+
+```bash
+sudo nginx -t
+```
+
+> **Important:** Test the application completely before proceeding to the SSL configuration in the next phase.
+
+---
