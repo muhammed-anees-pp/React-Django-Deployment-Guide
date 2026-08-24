@@ -564,3 +564,30 @@ frontend/dist
 > Depending on your frontend framework and build configuration, the output directory may differ.
 
 ---
+# Phase 12: Install Nginx
+
+Install Nginx:
+
+```bash
+sudo apt install nginx -y
+```
+
+Start the service:
+
+```bash
+sudo systemctl start nginx
+```
+
+Enable Nginx to start automatically:
+
+```bash
+sudo systemctl enable nginx
+```
+
+Check the status:
+
+```bash
+sudo systemctl status nginx
+```
+
+---
